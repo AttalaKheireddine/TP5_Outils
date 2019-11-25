@@ -17,6 +17,10 @@ import com.telly.service.ReserveService;
 @Controler
 
 class UserController {
+
+    @Autowired
+	ReserveService reserveService;
+
     @RequestMapping("/createaccount")
     public String createAccount(Model model, Principal principal) {
 
@@ -49,20 +53,20 @@ class UserController {
     @RequestMapping("/loggedout")
     public String showLogout() {
         return "loggedout";
-    }
+            
 
-    @RequestMapping(value = "/reservebook", method = RequestMethod.POST)
-    public String createReserveBook(@Validated(FormValidationGroup.class) Reserve reserve, BindingResult result, Principal principal) {
-		
-		if (result.hasErrors()) {
-			return "reservebus";
-		}
-		
-		String username = principal.getName();
-		reserve.getUser().setUsername(username);
-		
-		reserveService.reserve(reserve);
-	
+        
+             @RequestMapping(val
+         
+
+        if (result.hasErrors()) {
+        	return "reservebus";
+
+        
+
+        
+
+    
 		
 		return "home";
 

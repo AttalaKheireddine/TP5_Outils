@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 import com.telly.dao.Bus;
 import com.telly.dao.FormValidationGroup;
 import com.telly.service.BusService;
@@ -20,7 +19,29 @@ import com.telly.service.BusService;
 public class BusController {
 
     @Autowired
-    BusService busService;
+	BusService busService;
+	
+	@RequestMapping("/createtrip")
+	public String reserveBus(Model model, Principal principal) {
+
+		model.addAttribute("bus", new Bus());
+
+		return "createtrip";
+	}
+
+	@RequestMapping(value = "/createreserve", method = RequestMethod.POST)
+	public String createReserve(@Validated(FormValidationGroup.class) Bus bus, BindingResult result,
+			Principal principal) {
+
+		if (result.hasErrors()) {
+			return "reservebus";
+		}
+
+		busService.create(bus);
+
+		return "home";
+
+	}
     
     @RequestMapping("/results")
 	public String leave(Model model, Principal principal) {

@@ -1,11 +1,11 @@
 package com.telly.controllers;
 
 import java.security.Principal;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframeimport.rg.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,40 +15,41 @@ import com.telly.dao.FormValidationGroup;
 import com.telly.dao.Reserve;
 import com.telly.service.ReserveService;
 
-@Controler
-class UserController {
+@Controller
+public class UserController {
+
+	@Autowired
+	ReserveService reserveService;
+
+    @RequestMapping(value = "/reservebook", method = RequestMethod.POST)
+    public String createReserveBook(@Validated(FormValidationGroup.class) Reserve reserve, BindingResult result, Principal principal) {
+		
+		if (result.hasErrors()) {
+			return "reservebus";
+		}
+		
+		String username = principal.getName();
+		reserve.getUser().setUsername(username);
+		
+		reserveService.reserve(reserve);
 	
-    @RequestMapping("/createaccount")
-    public String createAccount(Model model, Principal principal) {
+		
+		return "home";
 
-        model.addAttribute("user", new User());
+	}
 
-        return "createaccount";
-    }
+    @RequestMapping(value = "/getreservations", method = RequestMethod.GET)
+    public String getReserveBook(@Validated(FormValidationGroup.class) Reserve reserve, Model model,
+            Principal principal) {
 
-    @RequestMapping(value = "/createuser", method = RequestMethod.POST)
-    public String createUser(@Validated(FormValidationGroup.class) User user, BindingResult result) {
+        String username = principal.getName();
+        reserve.getUser().setUsername(username);
 
-        if (result.hasErrors()) {
-            return "createaccount";
-        }
-
-        user.setAuthority("ROLE_USER");
-        user.setEnabled(true);
-
-        userService.create(user);
+        List<Reserve> reserves = reserveService.getReserves(username);
+        model.addAttribute("reserves", reserves);
+        System.out.println(reserves);
 
         return "home";
 
-    }
-
-    @RequestMapping("/login")
-    public String showLogin() {
-        return "login";
-    }
-
-    @RequestMapping("/loggedout")
-    public String showLogout() {
-        return "loggedout";
     }
 }

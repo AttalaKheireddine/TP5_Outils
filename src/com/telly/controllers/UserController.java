@@ -18,11 +18,12 @@ import com.telly.service.ReserveService;
 @Controller
 public class UserController {
 
-	@Autowired
-	ReserveService reserveService;
-
-    @RequestMapping(value = "/reservebook", method = RequestMethod.POST)
-    public String createReserveBook(@Validated(FormValidationGroup.class) Reserve reserve, BindingResult result, Principal principal) {
+    @Autowired
+    ReserveService reserveService;
+    
+    
+	@RequestMapping(value = "/reservebook", method = RequestMethod.POST)
+	public String createReserveBook(@Validated(FormValidationGroup.class) Reserve reserve, BindingResult result, Principal principal) {
 		
 		if (result.hasErrors()) {
 			return "reservebus";
